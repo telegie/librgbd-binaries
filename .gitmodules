@@ -1,3 +1,3 @@
 [submodule "librgbd"]
 	path = librgbd
-	url = https://github.com/telegie/librgbd
+	url = git@github.com:telegie/librgbd.git
