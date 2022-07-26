@@ -4,7 +4,7 @@
 
 mkdir build
 cd build
-cmake ../librgbd -DCMAKE_INSTALL_PREFIX="../1.0.0/arm64-mac"
+cmake ../librgbd -DCMAKE_INSTALL_PREFIX="../1.1.0/arm64-mac"
 make -j8
 make install
 
@@ -12,6 +12,6 @@ make install
 
 mkdir build
 cd build
-cmake ../librgbd -DCMAKE_INSTALL_PREFIX="../1.0.0/x64-linux"
+cmake ../librgbd -DCMAKE_INSTALL_PREFIX="../1.1.0/x64-linux"
 make -j8
 make install
