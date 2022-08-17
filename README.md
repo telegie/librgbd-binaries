@@ -4,7 +4,7 @@
 
 mkdir build
 cd build
-cmake ../librgbd -DCMAKE_INSTALL_PREFIX=../1.2.0/arm64-mac
+../scripts/configure-mac.sh
 make -j8
 make install
 
