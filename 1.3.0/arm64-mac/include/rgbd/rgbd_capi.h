@@ -39,26 +39,26 @@ extern "C"
     int RGBD_AUDIO_OUTPUT_SAMPLES_PER_FRAME();
     //////// END CONSTANTS ////////
 
-    //////// START CAPI UTILITY CLASSES ////////
-    void rgbd_cbyte_array_dtor(void* ptr);
-    uint8_t* rgbd_cbyte_array_data(void* ptr);
-    size_t rgbd_cbyte_array_size(void* ptr);
+    //////// START CAPI CONTAINER CLASSES ////////
+    void rgbd_native_byte_array_dtor(void* ptr);
+    uint8_t* rgbd_native_byte_array_get_data(void* ptr);
+    size_t rgbd_native_byte_array_get_size(void* ptr);
 
-    void rgbd_cfloat_array_dtor(void* ptr);
-    float* rgbd_cfloat_array_data(void* ptr);
-    size_t rgbd_cfloat_array_size(void* ptr);
+    void rgbd_native_float_array_dtor(void* ptr);
+    float* rgbd_native_float_array_get_data(void* ptr);
+    size_t rgbd_native_float_array_get_size(void* ptr);
 
-    void rgbd_cint16_array_dtor(void* ptr);
-    int16_t* rgbd_cint16_array_data(void* ptr);
-    size_t rgbd_cint16_array_size(void* ptr);
+    void rgbd_native_int16_array_dtor(void* ptr);
+    int16_t* rgbd_native_int16_array_get_data(void* ptr);
+    size_t rgbd_native_int16_array_get_size(void* ptr);
 
-    void rgbd_cuint8_array_dtor(void* ptr);
-    uint8_t* rgbd_cuint8_array_data(void* ptr);
-    size_t rgbd_cuint8_array_size(void* ptr);
+    void rgbd_native_uint8_array_dtor(void* ptr);
+    uint8_t* rgbd_native_uint8_array_get_data(void* ptr);
+    size_t rgbd_native_uint8_array_get_size(void* ptr);
 
-    void rgbd_cstring_dtor(void* ptr);
-    const char* rgbd_cstring_c_str(void* ptr);
-    //////// END CAPI UTILITY CLASSES ////////
+    void rgbd_native_string_dtor(void* ptr);
+    const char* rgbd_native_string_get_c_str(void* ptr);
+    //////// END CAPI CONTAINER CLASSES ////////
 
     //////// START CAMERA CALIBRATION ////////
     void rgbd_camera_calibration_dtor(void* ptr);
@@ -104,6 +104,12 @@ extern "C"
     void* rgbd_file_audio_frame_get_bytes(void* ptr);
     //////// END FILE AUDIO FRAME ////////
 
+    //////// START FILE AUDIO TRACK ////////
+    void rgbd_file_audio_track_dtor(void* ptr);
+    int rgbd_file_audio_track_get_track_number(void* ptr);
+    double rgbd_file_audio_track_get_sampling_frequency(void* ptr);
+    //////// END FILE AUDIO TRACK ////////
+
     //////// START FILE FRAME ////////
     void rgbd_file_frame_dtor(void* ptr);
     rgbdFileFrameType rgbd_file_frame_get_type(void* ptr);
@@ -129,7 +135,7 @@ extern "C"
     void* rgbd_file_tracks_get_color_track(void* ptr);
     void* rgbd_file_tracks_get_depth_track(void* ptr);
     void* rgbd_file_tracks_get_depth_confidence_track(void* ptr);
-    int rgbd_file_tracks_get_audio_track_number(void* ptr);
+    void* rgbd_file_tracks_get_audio_track(void* ptr);
     int rgbd_file_tracks_get_floor_track_number(void* ptr);
     //////// START FILE TRACKS ////////
 
