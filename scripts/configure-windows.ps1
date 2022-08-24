@@ -1,0 +1,1 @@
+cmake -S ../librgbd -G "Visual Studio 17 2022" -A x64 -D "CMAKE_INSTALL_PREFIX:PATH=../1.3.0/x64-windows"
