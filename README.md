@@ -19,6 +19,6 @@ cd librgb-binaries
 
 mkdir build
 cd build
-cmake ../librgbd -DCMAKE_INSTALL_PREFIX=../1.2.0/x64-linux
+../scripts/configure-linux.sh
 make -j8
 make install
