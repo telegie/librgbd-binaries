@@ -1,5 +1,14 @@
 # librgbd-binaries
 
+## For Windows
+
+mkdir build
+cd build
+..\scripts\configure-windows.sh
+Run INSTALL of librgbd.sln
+
+avcodec-58.dll, avutil-56.dll, libwinpthread-1.dll are copied from other places.
+
 ## For Mac
 
 mkdir build

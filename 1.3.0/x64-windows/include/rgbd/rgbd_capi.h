@@ -4,9 +4,9 @@
 extern "C"
 {
 #endif
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 #ifdef CMAKE_RGBD_OS_WINDOWS
 #define RGBD_INTERFACE_EXPORT __declspec(dllexport)
@@ -72,6 +72,11 @@ extern "C"
     RGBD_INTERFACE_EXPORT const char* rgbd_native_string_get_c_str(void* ptr);
     //////// END CAPI CONTAINER CLASSES ////////
 
+    //////// START AV PACKET HANDLE ////////
+    RGBD_INTERFACE_EXPORT void rgbd_av_packet_handle_dtor(void* ptr);
+    RGBD_INTERFACE_EXPORT void* rgbd_av_packet_handle_get_data_bytes(void* ptr);
+    //////// END AV PACKET HANDLE ////////
+
     //////// START CAMERA CALIBRATION ////////
     RGBD_INTERFACE_EXPORT void rgbd_camera_calibration_dtor(void* ptr);
     RGBD_INTERFACE_EXPORT rgbdCameraDeviceType
@@ -88,8 +93,20 @@ extern "C"
     RGBD_INTERFACE_EXPORT void* rgbd_depth_decoder_ctor(rgbdDepthCodecType depth_codec_type);
     RGBD_INTERFACE_EXPORT void rgbd_depth_decoder_dtor(void* ptr);
     RGBD_INTERFACE_EXPORT void* rgbd_depth_decoder_decode(void* ptr,
-                                    const uint8_t* encoded_depth_frame_data,
-                                    size_t encoded_depth_frame_size);
+                                                          const uint8_t* encoded_depth_frame_data,
+                                                          size_t encoded_depth_frame_size);
+    //////// END DEPTH DECODER ////////
+
+    //////// START DEPTH ENCODER ////////
+    RGBD_INTERFACE_EXPORT void* rgbd_depth_encoder_create_rvl_encoder(int width, int height);
+    RGBD_INTERFACE_EXPORT void*
+    rgbd_depth_encoder_create_tdc1_encoder(int width, int height, int depth_diff_multiplier);
+    RGBD_INTERFACE_EXPORT void rgbd_depth_encoder_dtor(void* ptr);
+    RGBD_INTERFACE_EXPORT void*
+    rgbd_depth_encoder_encode(void* ptr,
+                              const int32_t* depth_values_data,
+                              size_t depth_values_size,
+                              bool keyframe);
     //////// END DEPTH DECODER ////////
 
     //////// START FFMPEG AUDIO DECODER ////////
@@ -100,13 +117,46 @@ extern "C"
                                                                  size_t opus_frame_size);
     //////// END FFMPEG AUDIO DECODER ////////
 
+    //////// START FFMPEG AUDIO ENCODER ////////
+    RGBD_INTERFACE_EXPORT void* rgbd_ffmpeg_audio_encoder_ctor();
+    RGBD_INTERFACE_EXPORT void rgbd_ffmpeg_audio_encoder_dtor(void* ptr);
+    RGBD_INTERFACE_EXPORT void*
+    rgbd_ffmpeg_audio_encoder_encode(void* ptr, const float* pcm_samples, size_t pcm_samples_size);
+    RGBD_INTERFACE_EXPORT void* rgbd_ffmpeg_audio_encoder_flush(void* ptr);
+    //////// END FFMPEG AUDIO ENCODER ////////
+
+    //////// START FFMPEG AUDIO ENCODER FRAME ////////
+    RGBD_INTERFACE_EXPORT void rgbd_ffmpeg_audio_encoder_frame_dtor(void* ptr);
+    RGBD_INTERFACE_EXPORT size_t rgbd_ffmpeg_audio_encoder_frame_get_packet_count(void* ptr);
+    RGBD_INTERFACE_EXPORT void* rgbd_ffmpeg_audio_encoder_frame_get_packet(void* ptr, size_t index);
+    //////// END FFMPEG AUDIO ENCODER FRAME ////////
+
     //////// START FFMPEG VIDEO DECODER ////////
     RGBD_INTERFACE_EXPORT void* rgbd_ffmpeg_video_decoder_ctor(rgbdColorCodecType type);
     RGBD_INTERFACE_EXPORT void rgbd_ffmpeg_video_decoder_dtor(void* ptr);
     RGBD_INTERFACE_EXPORT void* rgbd_ffmpeg_video_decoder_decode(void* ptr,
-                                           const uint8_t* vp8_frame_data,
-                                           size_t vp8_frame_size);
+                                                                 const uint8_t* vp8_frame_data,
+                                                                 size_t vp8_frame_size);
     //////// END FFMPEG VIDEO DECODER ////////
+
+    //////// START FFMPEG VIDEO ENCODER ////////
+    RGBD_INTERFACE_EXPORT void* rgbd_ffmpeg_video_encoder_ctor(
+        rgbdColorCodecType type, int width, int height, int target_bitrate, int framerate);
+    RGBD_INTERFACE_EXPORT void rgbd_ffmpeg_video_encoder_dtor(void* ptr);
+    RGBD_INTERFACE_EXPORT void* rgbd_ffmpeg_video_encoder_encode(void* ptr,
+                                                                 const uint8_t* y_channel,
+                                                                 size_t y_channel_size,
+                                                                 const uint8_t* u_channel,
+                                                                 size_t u_channel_size,
+                                                                 const uint8_t* v_channel,
+                                                                 size_t v_channel_size,
+                                                                 bool keyframe);
+    //////// START FFMPEG VIDEO ENCODER ////////
+
+    //////// START FFMPEG VIDEO ENCODER FRAME ////////
+    RGBD_INTERFACE_EXPORT void rgbd_ffmpeg_video_encoder_frame_dtor(void* ptr);
+    RGBD_INTERFACE_EXPORT void* rgbd_ffmpeg_video_encoder_frame_get_packet(void* ptr);
+    //////// END FFMPEG VIDEO ENCODER FRAME ////////
 
     //////// START FILE ////////
     RGBD_INTERFACE_EXPORT void rgbd_file_dtor(void* ptr);
@@ -208,10 +258,8 @@ extern "C"
     RGBD_INTERFACE_EXPORT void* rgbd_file_writer_ctor(const char* file_path,
                                                       bool has_depth_confidence,
                                                       void* calibration,
-                                                      int color_bitrate,
                                                       int framerate,
                                                       rgbdDepthCodecType depth_codec_type,
-                                                      int depth_diff_multiplier,
                                                       int samplerate);
     RGBD_INTERFACE_EXPORT void rgbd_file_writer_dtor(void* ptr);
     RGBD_INTERFACE_EXPORT void rgbd_file_writer_write_cover(void* ptr,
@@ -225,27 +273,21 @@ extern "C"
                                                             size_t v_channel_size);
     RGBD_INTERFACE_EXPORT void
     rgbd_file_writer_write_video_frame(void* ptr,
-                                            int64_t time_point_us,
-                                            int width,
-                                            int height,
-                                            const uint8_t* y_channel,
-                                            size_t y_channel_size,
-                                            const uint8_t* u_channel,
-                                            size_t u_channel_size,
-                                            const uint8_t* v_channel,
-                                            size_t v_channel_size,
-                                            const int32_t* depth_values,
-                                            size_t depth_values_size,
-                                            const uint8_t* depth_confidence_values,
-                                            size_t depth_confidence_values_size,
-                                            float floor_normal_x,
-                                            float floor_normal_y,
-                                            float floor_normal_z,
-                                            float floor_distance);
+                                       int64_t time_point_us,
+                                       const uint8_t* color_bytes,
+                                       size_t color_byte_size,
+                                       const uint8_t* depth_bytes,
+                                       size_t depth_byte_size,
+                                       const uint8_t* depth_confidence_values,
+                                       size_t depth_confidence_values_size,
+                                       float floor_normal_x,
+                                       float floor_normal_y,
+                                       float floor_normal_z,
+                                       float floor_distance);
     RGBD_INTERFACE_EXPORT void rgbd_file_writer_write_audio_frame(void* ptr,
                                                                   int64_t time_point_us,
-                                                                  const float* pcm_samples,
-                                                                  size_t pcm_samples_size);
+                                                                  const uint8_t* audio_bytes,
+                                                                  size_t audio_byte_size);
     RGBD_INTERFACE_EXPORT void rgbd_file_writer_write_imu_frame(void* ptr,
                                                                 int64_t time_point_us,
                                                                 float acceleration_x,
