@@ -10,12 +10,9 @@ make install
 
 ## For Linux
 
-apt install git
 apt install cmake
 apt install build-essential
-
-git clone {repo}
-cd librgb-binaries
+apt install zlib1g-dev
 
 mkdir build
 cd build
