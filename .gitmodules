@@ -1,3 +1,0 @@
-[submodule "librgbd"]
-	path = librgbd
-	url = git@github.com:telegie/librgbd.git
