@@ -13,7 +13,7 @@ avcodec-58.dll, avutil-56.dll, libwinpthread-1.dll are copied from other places.
 
 mkdir build
 cd build
-../scripts/configure-mac.sh
+../scripts/configure-mac.sh {path_to_librgbd}
 make -j8
 make install
 
