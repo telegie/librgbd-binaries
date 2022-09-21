@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef CMAKE_RGBD_OS_WASM
+#include <emscripten.h>
+#endif
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -10,6 +14,8 @@ extern "C"
 
 #ifdef CMAKE_RGBD_OS_WINDOWS
 #define RGBD_INTERFACE_EXPORT __declspec(dllexport)
+#elif CMAKE_RGBD_OS_WASM
+#define RGBD_INTERFACE_EXPORT EMSCRIPTEN_KEEPALIVE
 #else
 #define RGBD_INTERFACE_EXPORT
 #endif
@@ -18,7 +24,8 @@ extern "C"
     typedef enum
     {
         RGBD_CAMERA_DEVICE_TYPE_AZURE_KINECT = 0,
-        RGBD_CAMERA_DEVICE_TYPE_IOS = 1
+        RGBD_CAMERA_DEVICE_TYPE_IOS = 1,
+        RGBD_CAMERA_DEVICE_TYPE_UNDISTORTED = 2
     } rgbdCameraDeviceType;
 
     typedef enum
@@ -145,11 +152,8 @@ extern "C"
     RGBD_INTERFACE_EXPORT void rgbd_ffmpeg_video_encoder_dtor(void* ptr);
     RGBD_INTERFACE_EXPORT void* rgbd_ffmpeg_video_encoder_encode(void* ptr,
                                                                  const uint8_t* y_channel,
-                                                                 size_t y_channel_size,
                                                                  const uint8_t* u_channel,
-                                                                 size_t u_channel_size,
                                                                  const uint8_t* v_channel,
-                                                                 size_t v_channel_size,
                                                                  bool keyframe);
     //////// START FFMPEG VIDEO ENCODER ////////
 
@@ -328,10 +332,6 @@ extern "C"
                                         float p1,
                                         float p2,
                                         float max_radius_for_projection);
-    RGBD_INTERFACE_EXPORT int rgbd_kinect_camera_calibration_get_color_width(void* ptr);
-    RGBD_INTERFACE_EXPORT int rgbd_kinect_camera_calibration_get_color_height(void* ptr);
-    RGBD_INTERFACE_EXPORT int rgbd_kinect_camera_calibration_get_depth_width(void* ptr);
-    RGBD_INTERFACE_EXPORT int rgbd_kinect_camera_calibration_get_depth_height(void* ptr);
     RGBD_INTERFACE_EXPORT int rgbd_kinect_camera_calibration_get_resolution_width(void* ptr);
     RGBD_INTERFACE_EXPORT int rgbd_kinect_camera_calibration_get_resolution_height(void* ptr);
     RGBD_INTERFACE_EXPORT float rgbd_kinect_camera_calibration_get_cx(void* ptr);
@@ -375,10 +375,6 @@ extern "C"
                                      float lens_distortion_center_y,
                                      const float* lens_distortion_lookup_table,
                                      size_t lens_distortion_lookup_table_size);
-    RGBD_INTERFACE_EXPORT int rgbd_ios_camera_calibration_get_color_width(void* ptr);
-    RGBD_INTERFACE_EXPORT int rgbd_ios_camera_calibration_get_color_height(void* ptr);
-    RGBD_INTERFACE_EXPORT int rgbd_ios_camera_calibration_get_depth_width(void* ptr);
-    RGBD_INTERFACE_EXPORT int rgbd_ios_camera_calibration_get_depth_height(void* ptr);
     RGBD_INTERFACE_EXPORT float rgbd_ios_camera_calibration_get_fx(void* ptr);
     RGBD_INTERFACE_EXPORT float rgbd_ios_camera_calibration_get_fy(void* ptr);
     RGBD_INTERFACE_EXPORT float rgbd_ios_camera_calibration_get_ox(void* ptr);
@@ -392,6 +388,21 @@ extern "C"
     RGBD_INTERFACE_EXPORT void*
     rgbd_ios_camera_calibration_get_lens_distortion_lookup_table(void* ptr);
     //////// END IOS CAMERA CALIBRATION ////////
+
+    //////// START UNDISTORTED CAMERA CALIBRATION ////////
+    RGBD_INTERFACE_EXPORT void* rgbd_undistorted_camera_calibration_ctor(int color_width,
+                                                                         int color_height,
+                                                                         int depth_width,
+                                                                         int depth_height,
+                                                                         float fx,
+                                                                         float fy,
+                                                                         float cx,
+                                                                         float cy);
+    RGBD_INTERFACE_EXPORT float rgbd_undistorted_camera_calibration_get_fx(void* ptr);
+    RGBD_INTERFACE_EXPORT float rgbd_undistorted_camera_calibration_get_fy(void* ptr);
+    RGBD_INTERFACE_EXPORT float rgbd_undistorted_camera_calibration_get_cx(void* ptr);
+    RGBD_INTERFACE_EXPORT float rgbd_undistorted_camera_calibration_get_cy(void* ptr);
+    //////// END UNDISTORTED CAMERA CALIBRATION ////////
 
     //////// START YUV FRAME ////////
     RGBD_INTERFACE_EXPORT void rgbd_yuv_frame_dtor(void* ptr);

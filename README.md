@@ -19,9 +19,7 @@ make install
 
 ## For Linux
 
-apt install cmake
-apt install build-essential
-apt install zlib1g-dev
+apt install cmake build-essential zlib1g-dev
 
 mkdir build
 cd build
