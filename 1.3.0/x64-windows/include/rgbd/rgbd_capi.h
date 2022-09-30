@@ -50,6 +50,7 @@ extern "C"
     RGBD_INTERFACE_EXPORT int RGBD_MAJOR_VERSION();
     RGBD_INTERFACE_EXPORT int RGBD_MINOR_VERSION();
     RGBD_INTERFACE_EXPORT int RGBD_PATCH_VERSION();
+    RGBD_INTERFACE_EXPORT float RGBD_DEFAULT_DEPTH_UNIT();
     RGBD_INTERFACE_EXPORT int RGBD_AUDIO_SAMPLE_RATE();
     RGBD_INTERFACE_EXPORT int RGBD_AUDIO_INPUT_CHANNEL_COUNT();
     RGBD_INTERFACE_EXPORT int RGBD_AUDIO_INPUT_SAMPLES_PER_FRAME();
@@ -109,11 +110,10 @@ extern "C"
     RGBD_INTERFACE_EXPORT void*
     rgbd_depth_encoder_create_tdc1_encoder(int width, int height, int depth_diff_multiplier);
     RGBD_INTERFACE_EXPORT void rgbd_depth_encoder_dtor(void* ptr);
-    RGBD_INTERFACE_EXPORT void*
-    rgbd_depth_encoder_encode(void* ptr,
-                              const int32_t* depth_values_data,
-                              size_t depth_values_size,
-                              bool keyframe);
+    RGBD_INTERFACE_EXPORT void* rgbd_depth_encoder_encode(void* ptr,
+                                                          const int32_t* depth_values_data,
+                                                          size_t depth_values_size,
+                                                          bool keyframe);
     //////// END DEPTH DECODER ////////
 
     //////// START FFMPEG AUDIO DECODER ////////
@@ -193,6 +193,10 @@ extern "C"
     RGBD_INTERFACE_EXPORT double rgbd_file_audio_track_get_sampling_frequency(void* ptr);
     //////// END FILE AUDIO TRACK ////////
 
+    //////// START FILE DEPTH VIDEO TRACK ////////
+    RGBD_INTERFACE_EXPORT float rgbd_file_depth_video_track_get_depth_unit(void* ptr);
+    //////// END FILE DEPTH VIDEO TRACK ////////
+
     //////// START FILE FRAME ////////
     RGBD_INTERFACE_EXPORT void rgbd_file_frame_dtor(void* ptr);
     RGBD_INTERFACE_EXPORT rgbdFileFrameType rgbd_file_frame_get_type(void* ptr);
@@ -260,11 +264,8 @@ extern "C"
 
     //////// START FILE WRITER ////////
     RGBD_INTERFACE_EXPORT void* rgbd_file_writer_ctor(const char* file_path,
-                                                      bool has_depth_confidence,
                                                       void* calibration,
-                                                      int framerate,
-                                                      rgbdDepthCodecType depth_codec_type,
-                                                      int samplerate);
+                                                      void* config);
     RGBD_INTERFACE_EXPORT void rgbd_file_writer_dtor(void* ptr);
     RGBD_INTERFACE_EXPORT void rgbd_file_writer_write_cover(void* ptr,
                                                             int width,
@@ -308,6 +309,18 @@ extern "C"
                                                                 float gravity_z);
     RGBD_INTERFACE_EXPORT void rgbd_file_writer_flush(void* ptr);
     //////// END FILE WRITER ////////
+
+    //////// START FILE WRITER CONFIG ////////
+    RGBD_INTERFACE_EXPORT void* rgbd_file_writer_config_ctor();
+    RGBD_INTERFACE_EXPORT void rgbd_file_writer_config_dtor(void* ptr);
+    RGBD_INTERFACE_EXPORT void rgbd_file_writer_config_set_framerate(void* ptr, int framerate);
+    RGBD_INTERFACE_EXPORT void rgbd_file_writer_config_set_samplerate(void* ptr, int samplerate);
+    RGBD_INTERFACE_EXPORT void
+    rgbd_file_writer_config_set_depth_codec_type(void* ptr, rgbdDepthCodecType depth_codec_type);
+    RGBD_INTERFACE_EXPORT void
+    rgbd_file_writer_config_set_has_depth_confidence(void* ptr, bool has_depth_confidence);
+    RGBD_INTERFACE_EXPORT void rgbd_file_writer_config_set_depth_unit(void* ptr, float depth_unit);
+    //////// END FILE WRITER CONFIG ////////
 
     //////// START KINECT CAMERA CALIBRATION ////////
     RGBD_INTERFACE_EXPORT void*
