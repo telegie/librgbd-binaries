@@ -240,7 +240,6 @@ extern "C"
     RGBD_INTERFACE_EXPORT void* rgbd_file_tracks_get_depth_track(void* ptr);
     RGBD_INTERFACE_EXPORT void* rgbd_file_tracks_get_depth_confidence_track(void* ptr);
     RGBD_INTERFACE_EXPORT void* rgbd_file_tracks_get_audio_track(void* ptr);
-    RGBD_INTERFACE_EXPORT int rgbd_file_tracks_get_floor_track_number(void* ptr);
     //////// START FILE TRACKS ////////
 
     //////// START FILE VIDEO FRAME ////////
@@ -248,6 +247,7 @@ extern "C"
     RGBD_INTERFACE_EXPORT int64_t rgbd_file_video_frame_get_global_timecode(void* ptr);
     RGBD_INTERFACE_EXPORT void* rgbd_file_video_frame_get_color_bytes(void* ptr);
     RGBD_INTERFACE_EXPORT void* rgbd_file_video_frame_get_depth_bytes(void* ptr);
+    RGBD_INTERFACE_EXPORT bool rgbd_file_video_frame_has_floor(void* ptr);
     RGBD_INTERFACE_EXPORT float rgbd_file_video_frame_get_floor_normal_x(void* ptr);
     RGBD_INTERFACE_EXPORT float rgbd_file_video_frame_get_floor_normal_y(void* ptr);
     RGBD_INTERFACE_EXPORT float rgbd_file_video_frame_get_floor_normal_z(void* ptr);
@@ -284,11 +284,7 @@ extern "C"
                                        const uint8_t* depth_bytes,
                                        size_t depth_byte_size,
                                        const uint8_t* depth_confidence_values,
-                                       size_t depth_confidence_values_size,
-                                       float floor_normal_x,
-                                       float floor_normal_y,
-                                       float floor_normal_z,
-                                       float floor_distance);
+                                       size_t depth_confidence_values_size);
     RGBD_INTERFACE_EXPORT void rgbd_file_writer_write_audio_frame(void* ptr,
                                                                   int64_t time_point_us,
                                                                   const uint8_t* audio_bytes,
